@@ -1,0 +1,133 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+.colorBlack {
+  color: #272727 !important;
+
+  &:hover {
+    color: #272727 !important;
+  }
+}
+
+.colorGrass {
+  color: #33cea0;
+
+  &:hover {
+    color: #33cea0 !important;
+  }
+}
+
+.colorRed {
+  color: #ff5722;
+
+  &:hover {
+    color: #ff5722 !important;
+  }
+}
+
+.colorOrange {
+  color: orange;
+
+  &:hover {
+    color: orange !important;
+  }
+}
+
+.colorGray {
+  color: #313131;
+
+  &:hover {
+    color: #313131 !important;
+  }
+}
+.colorText {
+  color: #d3d6dd !important;
+
+  &:hover {
+    color: #d3d6dd !important;
+
+  }
+}
+
+.colorBlue {
+  // color: #257dff !important;
+  color: #FEE100;
+
+  &:hover {
+    // color: #257dff !important;
+    color: #FEE100;
+  }
+}
+
+.colorGreen {
+  // color: #257dff !important;
+  color: #3B9830;
+
+  &:hover {
+    // color: #257dff !important;
+    color: #3B9830;
+  }
+}
+
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+// main-container global css
+.app-container {
+  padding: 20px;
+}
