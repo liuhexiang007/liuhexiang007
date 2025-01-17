@@ -102,17 +102,22 @@ async function DynamicAddRouter() {
     let subRoutes = []
     // 从vuex里取出路由信息
     store.dispatch('user/getRouter').then((menuList) => {
-      if (menuList) {
-        // menuList.forEach((item) => {
-        //   if (item.path === '/permissionList') {
-        //     item.component = 'ReportCenter'
-        //     item.parentId = 1803291628423659520
-        //     item.parentName = 'Report'
-        //     item.orderNum = 999
-        //   }
-        // })
-        subRoutes = createRouterDiGui(menuList)
+      // 添加 Accuracy Report 到 Report 菜单下
+      const reportMenu = menuList.find(item => item.component === 'Report')
+      if (reportMenu) {
+        console.log(menuList, 'eeeeeeeeeeeeeeeeeeeeeeee')
+        menuList.push({
+          menuId: '1852246054658004000',
+          component: 'accuracyReport',
+          parentId: reportMenu.menuId,
+          parentName: 'Report',
+          path: 'accuracyReport',
+          menuName: 'Accuracy Report',
+          orderNum: 999,
+          visible: '0'
+        })
       }
+      subRoutes = createRouterDiGui(menuList)
       router.options.routes = [...subRoutes]
       router.addRoutes(router.options.routes)
       resolve()
@@ -120,7 +125,12 @@ async function DynamicAddRouter() {
   })
 }
 export const loadView = (path1, path2) => {
-  return (resolve) => require([`@/views${path1}${path2}`], resolve)
+  return (resolve) => {
+    if (path2 === 'accuracyReport') {
+      return require(['@/views/report/accuracyReport.vue'], resolve)
+    }
+    return require([`@/views${path1}${path2}`], resolve)
+  }
 }
 export default {
   DynamicAddRouter: DynamicAddRouter

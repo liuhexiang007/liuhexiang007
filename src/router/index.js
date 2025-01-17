@@ -100,12 +100,7 @@ export const constantRoutes = [
     name: 'Report',
     meta: { title: 'Report', icon: 'data' },
     children: [
-      // {
-      //   path: '/reportCenter',
-      //   name: 'ReportCenter',
-      //   component: () => import('@/views/report/reportCenter'),
-      //   meta: { title: 'Report Center' }
-      // },
+
       {
         path: '/decreasingDemand',
         name: 'DecreasingDemand',
@@ -127,6 +122,7 @@ export const constantRoutes = [
         component: () => import('@/views/report/decreasingGovernment'),
         meta: { title: 'Decreasing Government Report' }
       }
+
     ]
   },
   {
