@@ -13,7 +13,7 @@
       <el-table
         v-loading="loading"
         :data="tableData"
-        style="width: 100%"
+        style="width: 100%;"
         border
         :header-cell-style="{ backgroundColor: 'rgb(246, 248, 250)' }"
       >
@@ -168,21 +168,21 @@ export default {
       this.getPLMPermissionList()
     },
     handleSaveMenu() {
-      const menuData = {
-        children: [
-          {
-            path: '/accuracyReport',
-            component: 'accuracyReport',
-            menuName: 'Accuracy Report',
-            parentId: '1803291628423659520',
-            orderNum: 999,
-            visible: '0'
-          }
-        ]
-      }
-      saveMenu(menuData).then(res => {
-        // 处理保存响应
-      })
+    //   const menuData = {
+    //     children: [
+    //       {
+    //         path: '/accuracyReport',
+    //         component: 'accuracyReport',
+    //         menuName: 'Accuracy Report',
+    //         parentId: '1803291628423659520',
+    //         orderNum: 999,
+    //         visible: '0'
+    //       }
+    //     ]
+    //   }
+    //   saveMenu(menuData).then(res => {
+    //     // 处理保存响应
+    //   })
     }
   }
 }
