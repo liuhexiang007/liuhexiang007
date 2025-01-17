@@ -3,23 +3,59 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <div style="display: flex;justify-content: space-between;align-items: center">
-          <span>Accuracy Report 預測準確度報告
-          </span>
-
+          <span>Accuracy Report</span>
+          <el-button type="primary" size="small" @click="addMenuClick">+ New</el-button>
         </div>
       </div>
 
+      <div id="content" class="content">
+        <el-tree
+          :data="permissionList"
+          node-key="id"
+          default-expand-all
+          :expand-on-click-node="false"
+        >
+          <span slot-scope="{ node, data }" class="custom-tree-node">
+            <span>{{ data.menuName + ' ( ' + data.orderNum + ' ) ' }}</span>
+            <span>
+              <el-button
+                v-if="node.level !== 3"
+                type="text"
+                size="mini"
+                @click="() => append(node, data)"
+              >
+                add
+              </el-button>
+              <el-button
+                type="text"
+                size="mini"
+                @click="() => edit(node, data)"
+              >
+                edit
+              </el-button>
+              <el-button
+                type="text"
+                size="mini"
+                @click="() => remove(node, data)"
+              >
+                delete
+              </el-button>
+            </span>
+          </span>
+        </el-tree>
+      </div>
     </el-card>
+    <add-new-permission-dialog ref="addNewPermissionDialog" @ok="updateData" />
   </div>
 </template>
 
 <script>
 
-// import AddNewPermissionDialog from '@/views/account/modules/addNewPermissionDialog'
+import AddNewPermissionDialog from '@/views/account/modules/addNewPermissionDialog'
 import { menuDelete, menuList } from '@/api/table'
 export default {
   name: 'PermissionList',
-  // components: { AddNewPermissionDialog },
+  components: { AddNewPermissionDialog },
   data() {
     return {
       permissionList: [],

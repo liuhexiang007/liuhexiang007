@@ -39,7 +39,7 @@
                 </el-form-item>
                 <el-button :loading="loading" type="primary" class="el_button" @click.native.prevent="handleLogin">{{ $t( 'login.loginTitle' ) }}</el-button>
                 <div style="display: flex;align-items: center;justify-content: flex-end">
-<!--                  <span style="float: right;margin-top: 20px;margin-bottom: 20px;cursor: pointer" @click="emailLogin">Email login</span>-->
+                  <!--                  <span style="float: right;margin-top: 20px;margin-bottom: 20px;cursor: pointer" @click="emailLogin">Email login</span>-->
                   <span style="float: right;margin-top: 20px;margin-bottom: 20px;cursor: pointer" @click="forgetPassword">{{ $t('login.forgetPassword') }}</span>
                 </div>
               </el-form>
@@ -68,8 +68,8 @@
                       auto-complete="off"
                       style="height:3.125rem;width: 60%"
                     />
-<!--                    <span v-if="show" style="margin-left: 10px;width: 40%;cursor: pointer" @click="sendEmail">{{ $t('login.getEmailCode') }}</span>-->
-<!--                    <span v-else style="margin-left: 10px;width: 40%">{{ count }}s{{ $t('login.getEmailCodeMessage') }}</span>-->
+                    <!--                    <span v-if="show" style="margin-left: 10px;width: 40%;cursor: pointer" @click="sendEmail">{{ $t('login.getEmailCode') }}</span>-->
+                    <!--                    <span v-else style="margin-left: 10px;width: 40%">{{ count }}s{{ $t('login.getEmailCodeMessage') }}</span>-->
                   </div>
                 </el-form-item>
                 <el-button :loading="loading" type="primary" class="el_button" @click.native.prevent="handleLoginEmail">{{ $t( 'login.loginTitle' ) }}</el-button>

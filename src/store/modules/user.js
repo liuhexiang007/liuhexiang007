@@ -39,6 +39,7 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
+    console.log('======================')
     return new Promise((resolve, reject) => {
       // setToken(`Bearer 123456`)
       // setUser(userInfo.username)

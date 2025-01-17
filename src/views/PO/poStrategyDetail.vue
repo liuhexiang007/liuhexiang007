@@ -41,9 +41,11 @@
             </el-select>
           </div>
           <el-button size="small" @click="resetClick">Reset</el-button>
-          <el-button type="primary" size="small" @click="searchClick"
-            >Search</el-button
-          >
+          <el-button
+            type="primary"
+            size="small"
+            @click="searchClick"
+          >Search</el-button>
         </div>
         <!-- 右侧控件组 -->
         <div style="width: 35%; display: flex; flex-direction: column">
@@ -81,7 +83,7 @@
                   content="請輸入40,000到60,000之間的數值"
                   placement="top"
                 >
-                  <i class="el-icon-warning" style="color: #f56c6c"></i>
+                  <i class="el-icon-warning" style="color: #f56c6c" />
                 </el-tooltip>
               </template>
             </el-input>
@@ -90,16 +92,14 @@
               style="padding: 4px 6px; margin: 0 4px"
               :disabled="!costLimiterEnabled"
               @click="resetCostLimit"
-              >Reset</el-button
-            >
+            >Reset</el-button>
             <el-button
               type="primary"
               size="mini"
               style="padding: 4px 6px; margin-left: 4px"
               :disabled="!costLimiterEnabled || isBusy"
               @click="updateCostLimit"
-              >Update</el-button
-            >
+            >Update</el-button>
           </div>
           <!-- 滑块组件 -->
           <div style="width: 100%">
@@ -111,12 +111,12 @@
                 margin-bottom: 2px;
               "
             >
-              <span style="width: 21%; color: #909399; font-size: 12px"
-                >40k</span
-              >
-              <span style="width: 19%; color: #909399; font-size: 12px"
-                >45k</span
-              >
+              <span
+                style="width: 21%; color: #909399; font-size: 12px"
+              >40k</span>
+              <span
+                style="width: 19%; color: #909399; font-size: 12px"
+              >45k</span>
               <span
                 style="
                   width: 20%;
@@ -124,8 +124,7 @@
                   font-size: 12px;
                   text-align: center;
                 "
-                >50k</span
-              >
+              >50k</span>
               <span
                 style="
                   width: 19%;
@@ -133,8 +132,7 @@
                   font-size: 12px;
                   text-align: right;
                 "
-                >55k</span
-              >
+              >55k</span>
               <span
                 style="
                   width: 21%;
@@ -142,8 +140,7 @@
                   font-size: 12px;
                   text-align: right;
                 "
-                >60k</span
-              >
+              >60k</span>
             </div>
             <el-slider
               v-model="sliderValue"
@@ -151,8 +148,8 @@
               :max="120"
               :min="80"
               :step="5"
-              @change="sliderChange"
               style="margin: 0"
+              @change="sliderChange"
             />
           </div>
         </div>
@@ -172,16 +169,16 @@
             padding: 10px 0 10px 10px;
             background-color: rgb(211 211 211);
           "
-          >{{ description }}</span
-        >
+        >Vehicle Type: {{ description.vehicleType || '' }}, Make:
+          {{ description.manufacturer || '' }}, Model:
+          {{ description.modelNo || '' }}</span>
         <el-button
           type="primary"
           size="mini"
           :disabled="isBusy"
           style="padding: 7px 12px; height: 28px; margin-top: 16px"
           @click="limiterClick"
-          >$50K Limiter</el-button
-        >
+        >$50K Limiter</el-button>
       </div>
       <el-table
         v-loading="loading"
@@ -405,15 +402,13 @@
               type="primary"
               size="small"
               @click="$refs.potentialVendorsDialog.showDialog(material)"
-              >Potential<br />Vendors 供應商</el-button
-            >
+            >Potential<br>Vendors 供應商</el-button>
             <el-button
               style="width: 120px"
               type="primary"
               size="small"
               @click="$refs.servicePackDialog.showDialog(material)"
-              >Service Pack<br />維修套裝</el-button
-            >
+            >Service Pack<br>維修套裝</el-button>
           </div>
           <div style="margin-bottom: 20px">
             <el-button
@@ -421,19 +416,19 @@
               type="primary"
               size="small"
               @click="$refs.exchangeableDialog.showDialog(material)"
-              >Exchangeable<br />Materials 替換零件</el-button
-            >
+            >Exchangeable<br>Materials 替換零件</el-button>
             <el-button
               style="width: 120px"
               type="primary"
               size="small"
               @click="$refs.feedbackReportDialog.showDialog(material, 'A1')"
-              >Report Feedback<br />用後報告</el-button
-            >
+            >Report Feedback<br>用後報告</el-button>
           </div>
-          <el-button type="primary" size="small" @click="exitClick"
-            >Exit 離開及列印<br />（Feedback & Print）</el-button
-          >
+          <el-button
+            type="primary"
+            size="small"
+            @click="exitClick"
+          >Exit 離開及列印<br>（Feedback & Print）</el-button>
         </div>
       </div>
     </el-card>
@@ -446,46 +441,50 @@
 </template>
 
 <script>
-import moment from "moment";
+import moment from 'moment'
 import {
   getTableDateList,
   getTableInfo,
   getTableMaterialList,
-  tableLimit,
-} from "@/api/table";
-import PotentialVendorsDialog from "@/views/PO/module/potentialVendorsDialog";
-import ServicePackDialog from "@/views/PO/module/servicePackDialog";
-import ExchangeableDialog from "@/views/PO/module/exchangeableDialog";
-import FeedbackReportDialog from "@/views/PO/module/feedbackReportDialog";
-import ExitDialog from "@/views/PO/module/exitDialog";
-moment.locale("zh-cn");
+  tableLimit
+} from '@/api/table'
+import PotentialVendorsDialog from '@/views/PO/module/potentialVendorsDialog'
+import ServicePackDialog from '@/views/PO/module/servicePackDialog'
+import ExchangeableDialog from '@/views/PO/module/exchangeableDialog'
+import FeedbackReportDialog from '@/views/PO/module/feedbackReportDialog'
+import ExitDialog from '@/views/PO/module/exitDialog'
+moment.locale('zh-cn')
 
 export default {
-  name: "PoStrategyDetail",
+  name: 'PoStrategyDetail',
   components: {
     ExitDialog,
     FeedbackReportDialog,
     ExchangeableDialog,
     ServicePackDialog,
-    PotentialVendorsDialog,
+    PotentialVendorsDialog
   },
   data() {
     return {
       isBusy: false,
-      material: "",
-      materialList: "",
-      dateList: "",
-      reportDate: "",
+      material: '',
+      materialList: '',
+      dateList: '',
+      reportDate: '',
       limit: 0,
       sliderValue: 100,
       marks: {
-        80: "80%",
-        90: "90%",
-        100: "100%",
-        110: "110%",
-        120: "120%",
+        80: '80%',
+        90: '90%',
+        100: '100%',
+        110: '110%',
+        120: '120%'
       },
-      description: "",
+      description: {
+        vehicleType: '',
+        manufacturer: '',
+        modelNo: ''
+      },
       tableData: [],
       tableData1: [],
       tableData2: [],
@@ -494,240 +493,207 @@ export default {
       loading1: false,
       loading2: false,
       costLimiterEnabled: false,
-      costLimitValue: "50000",
-      isInvalidValue: false, // 添加验证状态标记
-    };
-  },
-  created() {
-    this.getMaterialList("");
-    this.getDateList();
-  },
-  methods: {
-    // 添加输入处理方法
-    handleCostLimitInput(value) {
-      if (!this.costLimiterEnabled) return;
-      // 移除所有逗号并转换为数字
-      const numValue = Number(value.replace(/,/g, ""));
-
-      if (!isNaN(numValue)) {
-        // 更新验证状态
-        this.isInvalidValue = numValue < 40000 || numValue > 60000;
-        // 计算百分比：输入值 / 50000 * 100
-        const percentage = (numValue / 50000) * 100;
-        // 确保百分比在80-120之间
-        if (percentage >= 80 && percentage <= 120) {
-          this.sliderValue = percentage;
-          this.limit = 0;
-          this.isBusy = false;
-          // 如果需要立即触发更新，可以调用 tableLimit
-          this.tableLimit();
-        }
-      }
-    },
-
-    // 可以添加一个格式化方法来处理输入的数字格式
-    formatCostLimit(value) {
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    },
-    //重置按钮
-    resetClick() {
-      this.material = "";
-      this.partNumber = "";
-      this.reportDate = "";
-      this.sliderValue = 100;
-      this.isBusy = false;
-      this.limit = 0;
-      this.costLimitValue = 50000;
-      this.getMaterialList("");
-    },
-    searchClick() {
-      // 查询
-      this.tableData = [];
-      this.getDataDetail();
-    },
-    remoteMethod(query) {
-      // 下拉框远程搜索
-      if (query !== "") {
-        this.getMaterialList(query);
-      }
-    },
-    getMaterialList(name) {
-      this.searchLoading = true;
-      this.materialList = [];
-      getTableMaterialList({
-        name: name,
-      }).then((res) => {
-        this.searchLoading = false;
-        if (res.data) {
-          const list = [];
-          res.data.forEach((item, index) => {
-            const map = {
-              key: index,
-              label: item.name,
-              value: item.name,
-            };
-            list.push(map);
-          });
-          this.materialList = list;
-        }
-      });
-    },
-    getDateList() {
-      this.dateList = [];
-      getTableDateList().then((res) => {
-        if (res.data) {
-          const list = [];
-          res.data.forEach((item, index) => {
-            const map = {
-              label: item.date,
-              value: index,
-            };
-            list.push(map);
-          });
-          if (list && list.length > 0) {
-            this.reportDate = list[0].label;
-          }
-          this.dateList = list;
-        }
-      });
-    },
-    sliderChange(value) {
-      // 根据滑块百分比计算对应的金额
-      const amount = Math.round((value / 100) * 50000);
-      // 格式化金额并更新input值
-      this.costLimitValue = this.formatCostLimit(amount.toString());
-      // 检查是否在有效范围内
-      this.isInvalidValue = amount < 40000 || amount > 60000;
-      // 滑块改变
-      this.limit = 0;
-      this.isBusy = false;
-      this.tableLimit();
-    },
-    limiterClick() {
-      // limit按钮点击
-      this.limit = 1;
-      this.isBusy = true;
-      this.tableLimit();
-    },
-    tableLimit() {
-      const posList = [];
-      this.tableData2.forEach((item) => {
-        item.price = item.unitPrice;
-        posList.push(item);
-      });
-      this.loading = true;
-      tableLimit({
-        limit: this.limit,
-        percentage: this.sliderValue / 100,
-        // predictions: this.tableData,
-        material: this.material,
-        pos: posList,
-      }).then((res) => {
-        this.loading = false;
-        if (res.data) {
-          this.tableData = res.data;
-        }
-      });
-    },
-    getDataDetail() {
-      // this.tableData = [{
-      //   days: '+90',
-      //   period: '20190502-20190731',
-      //   S01: '-3245',
-      //   S02: '-411',
-      //   S03: '-481',
-      //   S04: '-212',
-      //   S05: '-260',
-      //   total: '-4608',
-      //   cur: 'HKD',
-      //   cost: '150,041.47'
-      // }, {
-      //   days: '+180',
-      //   period: '20190502-20191029',
-      //   S01: '-6392',
-      //   S02: '-888',
-      //   S03: '-894',
-      //   S04: '-427',
-      //   S05: '-440',
-      //   total: '-9040',
-      //   cur: 'HKD',
-      //   cost: '294,210.11'
-      // }, {
-      //   days: '+360',
-      //   period: '20190502-20200426',
-      //   S01: '-13115',
-      //   S02: '-1811',
-      //   S03: '-1883',
-      //   S04: '-782',
-      //   S05: '-1035',
-      //   total: '-18626',
-      //   cur: 'HKD',
-      //   cost: '605,760.25'
-      // }]
-      this.loading = true;
-      this.loading1 = true;
-      this.loading2 = true;
-      getTableInfo({
-        material: this.material,
-        date: this.reportDate,
-        amount: this.sliderValue * 50 * 10,
-      }).then((res) => {
-        this.loading = false;
-        this.loading2 = false;
-        this.loading1 = false;
-        if (res.data) {
-          this.tableData = res.data.prediction;
-          this.tableData1 = res.data.consumption;
-          this.tableData2 = res.data.porecords;
-          this.description = res.data.description;
-          this.tableLimit();
-        } else {
-          this.$message.warning("Insufficient Data for AI prediction.");
-        }
-      });
-    },
-    exitClick() {
-      this.$refs.exitDialog.showDialog(this.material, "A1");
-    },
-    showTime(time) {
-      // 时间展示
-      return moment(time).format("DD/MM/YYYY");
-    },
-    updateData() {
-      // 更新数据
-      this.currentPage = 1;
-      this.getDataDetail();
-    },
-    resetCostLimit() {
-      this.costLimitValue = 50000;
-      this.limit = 0;
-      this.getMaterialList("");
-      this.sliderValue = 100;
-      this.isBusy = false;
-    },
-    updateCostLimit() {
-      this.costLimitValue = this.costLimitValue;
-      this.isBusy = true;
-
-      // limit按钮点击
-      this.limit = 1;
-      this.tableLimit();
-    },
+      costLimitValue: 50000,
+      isInvalidValue: false // 添加验证状态标记
+    }
   },
   // 添加 watch 来格式化输入值
   watch: {
     costLimitValue: {
       handler(newVal) {
         // 移除非数字字符
-        const numStr = newVal.replace(/[^\d]/g, "");
+        const numStr = newVal.replace(/[^\d]/g, '')
         if (numStr !== newVal) {
           // 格式化数字
-          this.costLimitValue = this.formatCostLimit(numStr);
+          this.costLimitValue = this.formatCostLimit(numStr)
         }
-      },
-    },
+      }
+    }
   },
-};
+  created() {
+    this.getMaterialList('')
+    this.getDateList()
+  },
+  methods: {
+    // 添加输入处理方法
+    handleCostLimitInput(value) {
+      if (!this.costLimiterEnabled) return
+      // 移除所有逗号并转换为数字
+      const numValue = Number(value.replace(/,/g, ''))
+
+      if (!isNaN(numValue)) {
+        // 更新验证状态
+        this.isInvalidValue = numValue < 40000 || numValue > 60000
+        // 计算百分比：输入值 / 50000 * 100
+        const percentage = (numValue / 50000) * 100
+        // 确保百分比在80-120之间
+        if (percentage >= 80 && percentage <= 120) {
+          this.sliderValue = percentage
+          this.limit = 0
+          this.isBusy = false
+          // 如果需要立即触发更新，可以调用 tableLimit
+          this.tableLimit()
+        }
+      }
+    },
+
+    // 可以添加一个格式化方法来处理输入的数字格式
+    formatCostLimit(value) {
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    },
+    // 重置按钮
+    resetClick() {
+      this.material = ''
+      this.partNumber = ''
+      this.reportDate = ''
+      this.sliderValue = 100
+      this.isBusy = false
+      this.limit = 0
+      this.costLimitValue = 50000
+      this.getMaterialList('')
+    },
+    searchClick() {
+      // 查询
+      this.tableData = []
+      this.getDataDetail()
+    },
+    remoteMethod(query) {
+      // 下拉框远程搜索
+      if (query !== '') {
+        this.getMaterialList(query)
+      }
+    },
+    getMaterialList(name) {
+      this.searchLoading = true
+      this.materialList = []
+      getTableMaterialList({
+        name: name
+      }).then(res => {
+        this.searchLoading = false
+        if (res.data) {
+          const list = []
+          res.data.forEach((item, index) => {
+            const map = {
+              key: index,
+              label: item.name,
+              value: item.name
+            }
+            list.push(map)
+          })
+          this.materialList = list
+        }
+      })
+    },
+    getDateList() {
+      this.dateList = []
+      getTableDateList().then(res => {
+        if (res.data) {
+          const list = []
+          res.data.forEach((item, index) => {
+            const map = {
+              label: item.date,
+              value: index
+            }
+            list.push(map)
+          })
+          if (list && list.length > 0) {
+            this.reportDate = list[0].label
+          }
+          this.dateList = list
+        }
+      })
+    },
+    sliderChange(value) {
+      // 根据滑块百分比计算对应的金额
+      const amount = Math.round((value / 100) * 50000)
+      // 格式化金额并更新input值
+      this.costLimitValue = this.formatCostLimit(amount.toString())
+      // 检查是否在有效范围内
+      this.isInvalidValue = amount < 40000 || amount > 60000
+      // 滑块改变
+      this.limit = 0
+      this.isBusy = false
+      this.tableLimit()
+    },
+    limiterClick() {
+      // limit按钮点击
+      this.limit = 1
+      this.isBusy = true
+      this.tableLimit()
+    },
+    tableLimit() {
+      const posList = []
+      this.tableData2.forEach(item => {
+        item.price = item.unitPrice
+        posList.push(item)
+      })
+      this.loading = true
+      tableLimit({
+        limit: this.limit,
+        percentage: this.sliderValue / 100,
+        // predictions: this.tableData,
+        material: this.material,
+        pos: posList
+      }).then(res => {
+        this.loading = false
+        if (res.data) {
+          this.tableData = res.data
+        }
+      })
+    },
+    getDataDetail() {
+      getTableInfo({
+        material: this.material,
+        date: this.reportDate,
+        amount: this.sliderValue * 50 * 10
+      }).then(res => {
+        this.loading = false
+        this.loading2 = false
+        this.loading1 = false
+        if (res.data) {
+          this.tableData = res.data.prediction
+          this.tableData1 = res.data.consumption
+          this.tableData2 = res.data.porecords
+          this.description = res.data.description || {
+            vehicleType: '',
+            manufacturer: '',
+            modelNo: ''
+          }
+          this.tableLimit()
+        } else {
+          this.$message.warning('Insufficient Data for AI prediction.')
+        }
+      })
+    },
+    exitClick() {
+      this.$refs.exitDialog.showDialog(this.material, 'A1')
+    },
+    showTime(time) {
+      // 时间展示
+      return moment(time).format('DD/MM/YYYY')
+    },
+    updateData() {
+      // 更新数据
+      this.currentPage = 1
+      this.getDataDetail()
+    },
+    resetCostLimit() {
+      this.costLimitValue = 50000
+      this.limit = 0
+      this.getMaterialList('')
+      this.sliderValue = 100
+      this.isBusy = false
+    },
+    updateCostLimit() {
+      // this.costLimitValue = this.costLimitValue
+      this.isBusy = true
+
+      // limit按钮点击
+      this.limit = 1
+      this.tableLimit()
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -765,7 +731,7 @@ export default {
 .clearfix:before,
 .clearfix:after {
   display: table;
-  content: "";
+  content: '';
 }
 .clearfix:after {
   clear: both;
@@ -782,7 +748,7 @@ export default {
     span {
       color: black;
       font-weight: bold;
-      font-family: "Microsoft Yahei", Arial, sans-serif;
+      font-family: 'Microsoft Yahei', Arial, sans-serif;
       font-size: 20px;
       text-indent: 20px;
     }

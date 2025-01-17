@@ -11,7 +11,7 @@ function createRouterDiGui(arr) {
   arr.forEach((item) => {
     const children = []
     if (!item.parentId) {
-      arr.forEach(data => {
+      arr.forEach((data) => {
         if (data.parentId && data.parentId === item['menuId']) {
           const component = loadView(item.path, data.path)
           children.push({
@@ -96,13 +96,21 @@ function createRouterDiGui(arr) {
 
 // 执行动态添加路由
 async function DynamicAddRouter() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     // router.addRoutes(router.options.routes)
     // resolve()
     let subRoutes = []
     // 从vuex里取出路由信息
-    store.dispatch('user/getRouter').then(menuList => {
+    store.dispatch('user/getRouter').then((menuList) => {
       if (menuList) {
+        // menuList.forEach((item) => {
+        //   if (item.path === '/permissionList') {
+        //     item.component = 'ReportCenter'
+        //     item.parentId = 1803291628423659520
+        //     item.parentName = 'Report'
+        //     item.orderNum = 999
+        //   }
+        // })
         subRoutes = createRouterDiGui(menuList)
       }
       router.options.routes = [...subRoutes]

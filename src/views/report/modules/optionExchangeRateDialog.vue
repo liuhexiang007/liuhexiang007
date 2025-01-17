@@ -26,7 +26,7 @@
             label="HKD"
           >
             <template slot-scope="scope">
-              <el-input v-model="scope.row.exchangeRate" type="number"></el-input>
+              <el-input v-model="scope.row.exchangeRate" type="number" />
             </template>
           </el-table-column>
         </el-table>

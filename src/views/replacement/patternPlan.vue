@@ -89,9 +89,11 @@
           <!--            </el-select>-->
           <!--          </div>-->
           <el-button size="small" @click="resetClick">Reset</el-button>
-          <el-button type="primary" size="small" @click="searchClick"
-            >Search</el-button
-          >
+          <el-button
+            type="primary"
+            size="small"
+            @click="searchClick"
+          >Search</el-button>
         </div>
       </div>
       <div
@@ -110,9 +112,9 @@
             background-color: rgb(211 211 211);
           "
         >
-          Vehicle Type: {{ getDescriptionInfo.vehicleType }}, 
-          Make: {{ getDescriptionInfo.manufacturer }}, 
-          Model: {{ getDescriptionInfo.modelNo }}
+          Vehicle Type: {{ getDescriptionInfo.vehicleType }}, Make:
+          {{ getDescriptionInfo.manufacturer }}, Model:
+          {{ getDescriptionInfo.modelNo }}
         </span>
       </div>
       <span>Parts Replacement Prediction in next 12 months 預計下一次維修</span>
@@ -257,19 +259,19 @@
               type="primary"
               size="small"
               @click="exportPlanClick"
-              >Export<br />Plan 導出表格</el-button
-            >
+            >Export<br>Plan 導出表格</el-button>
             <el-button
               style="width: 120px"
               type="primary"
               size="small"
               @click="$refs.feedbackReportDialog.showDialog(material, 'C2')"
-              >Report<br />Feedback用後報告</el-button
-            >
+            >Report<br>Feedback用後報告</el-button>
           </div>
-          <el-button type="primary" size="small" @click="exitClick"
-            >Exit 離開及列印<br />（Feedback & Print）</el-button
-          >
+          <el-button
+            type="primary"
+            size="small"
+            @click="exitClick"
+          >Exit 離開及列印<br>（Feedback & Print）</el-button>
         </div>
       </div>
     </el-card>
@@ -279,35 +281,35 @@
 </template>
 
 <script>
-import moment from "moment";
+import moment from 'moment'
 import {
   c2Makes,
   c2Models,
   c2Search,
   getTableDateList,
-  vsnList,
-} from "@/api/table";
-moment.locale("zh-cn");
-import FeedbackReportDialog from "@/views/PO/module/feedbackReportDialog";
-import ExitDialog from "@/views/PO/module/exitDialog";
+  vsnList
+} from '@/api/table'
+moment.locale('zh-cn')
+import FeedbackReportDialog from '@/views/PO/module/feedbackReportDialog'
+import ExitDialog from '@/views/PO/module/exitDialog'
 
 export default {
-  name: "PatternPlan",
+  name: 'PatternPlan',
   components: { ExitDialog, FeedbackReportDialog },
   data() {
     return {
       isBusy: false,
       makeSearchLoading: false,
       makeList: [],
-      makeValue: "",
+      makeValue: '',
       modelSearchLoading: false,
       modelList: [],
-      modelValue: "",
+      modelValue: '',
       VSNSearchLoading: false,
-      material: "",
-      materialList: "",
-      dateList: "",
-      reportDate: "",
+      material: '',
+      materialList: '',
+      dateList: '',
+      reportDate: '',
       description: {
         vehicleType: '',
         manufacturer: '',
@@ -316,8 +318,8 @@ export default {
       tableData1: [],
       tableData2: [],
       loading1: false,
-      loading2: false,
-    };
+      loading2: false
+    }
   },
   computed: {
     getDescriptionInfo() {
@@ -329,140 +331,141 @@ export default {
     }
   },
   created() {
-    // this.getMaterialList('')
-    this.getMakeList();
+    this.getMaterialList('')
+    this.getMakeList()
   },
   methods: {
     resetClick() {
-      this.partNumber = "";
-      this.reportDate = "";
+      this.partNumber = ''
+      this.reportDate = ''
     },
     searchClick() {
       // 查询
-      this.tableData1 = [];
-      this.tableData2 = [];
-      this.getDataDetail();
-      console.log(this.tableData1, "dadaadatata");
+      this.tableData1 = []
+      this.tableData2 = []
+      this.getDataDetail()
+      console.log(this.tableData1, 'dadaadatata')
     },
     makeRemoteMethod(query) {
       // make下拉搜索
-      if (query !== "") {
-        this.getMakeList(query);
+      if (query !== '') {
+        this.getMakeList(query)
       }
     },
     modelRemoteMethod(query) {
       // model下拉搜索
-      if (query !== "") {
-        this.getModelList(query);
+      if (query !== '') {
+        this.getModelList(query)
       }
     },
     VSNRemoteMethod(query) {
       // VSN下拉搜索
-      if (query !== "") {
-        this.getMaterialList(query);
+      if (query !== '') {
+        this.getMaterialList(query)
       }
     },
     getMakeList(name) {
       // 获取make
-      this.makeSearchLoading = true;
+      this.makeSearchLoading = true
       c2Makes({
-        name: name,
+        name: name
       }).then((res) => {
-        this.makeSearchLoading = false;
+        this.makeSearchLoading = false
         if (res.data) {
-          const list = [];
+          const list = []
           res.data.forEach((item) => {
             const map = {
               label: item,
-              value: item,
-            };
-            list.push(map);
-          });
-          this.makeList = list;
+              value: item
+            }
+            list.push(map)
+          })
+          this.makeList = list
         }
-      });
+      })
     },
     getModelList(name) {
       // 获取model
-      this.modelSearchLoading = true;
+      this.modelSearchLoading = true
       c2Models({
         make: this.makeValue,
-        name: name,
+        name: name
       }).then((res) => {
-        this.modelSearchLoading = false;
+        this.modelSearchLoading = false
         if (res.data) {
-          const list = [];
+          const list = []
           res.data.forEach((item) => {
             const map = {
               label: item,
-              value: item,
-            };
-            list.push(map);
-          });
-          this.modelList = list;
+              value: item
+            }
+            list.push(map)
+          })
+          this.modelList = list
         }
-      });
+      })
     },
     getMaterialList(name) {
-      this.materialList = [];
-      this.VSNSearchLoading = true;
+      this.materialList = []
+      this.VSNSearchLoading = true
       vsnList({
         make: this.makeValue,
         model: this.modelValue,
-        name: name,
+        name: name
       }).then((res) => {
-        this.VSNSearchLoading = false;
+        this.VSNSearchLoading = false
         if (res.data) {
-          const list = [];
+          const list = []
           res.data.forEach((item) => {
             const map = {
               label: item,
-              value: item,
-            };
-            list.push(map);
-          });
-          this.materialList = list;
+              value: item
+            }
+            list.push(map)
+          })
+          this.materialList = list
         }
-      });
+      })
     },
     getDateList() {
-      this.dateList = [];
+      this.dateList = []
       getTableDateList().then((res) => {
         if (res.data) {
-          const list = [];
+          const list = []
           res.data.forEach((item, index) => {
             const map = {
               label: item.date,
-              value: index,
-            };
-            list.push(map);
-          });
-          this.dateList = list;
+              value: index
+            }
+            list.push(map)
+          })
+          this.dateList = list
         }
-      });
+      })
     },
     getDataDetail() {
-      this.loading1 = true;
-      this.loading2 = true;
+      this.loading1 = true
+      this.loading2 = true
       c2Search({
-        name: this.material,
+        name: this.material
         // date: this.reportDate
       }).then((res) => {
-        this.loading2 = false;
-        this.loading1 = false;
+        this.loading2 = false
+        this.loading1 = false
         if (res.data) {
-           // 打印第一条数据看看结构
-        console.log('First record:', res.data.maintenancePrediction[0])
-        
+          // 打印第一条数据看看结构
+          console.log('First record:', res.data.maintenancePrediction[0])
+
           try {
             // 找到包含 description 的记录
-            const item = res.data.maintenancePrediction.find(record => 
-              record.description && 
-              record.description.vehicleType && 
-              record.description.manufacturer && 
-              record.description.modelNo
+            const item = res.data.maintenancePrediction.find(
+              (record) =>
+                record.description &&
+                record.description.vehicleType &&
+                record.description.manufacturer &&
+                record.description.modelNo
             )
-            
+
             if (item) {
               this.description = {
                 vehicleType: item.description.vehicleType,
@@ -487,29 +490,29 @@ export default {
     exportPlanClick() {
       // 导出表格
       if (this.material && this.material.length > 0) {
-        let url = window._CONFIG.baseUrl + "/c2/export";
-        url = url + "?name=" + this.material;
+        let url = window._CONFIG.baseUrl + '/c2/export'
+        url = url + '?name=' + this.material
         if (url) {
-          window.open(url);
+          window.open(url)
         }
       } else {
-        this.$message.error("Please select VSN");
+        this.$message.error('Please select VSN')
       }
     },
     exitClick() {
-      this.$refs.exitDialog.showDialog(this.material, "C2");
+      this.$refs.exitDialog.showDialog(this.material, 'C2')
     },
     showTime(time) {
       // 时间展示
-      return moment(time).format("DD/MM/YYYY");
+      return moment(time).format('DD/MM/YYYY')
     },
     updateData() {
       // 更新数据
-      this.currentPage = 1;
-      this.getDataDetail();
-    },
-  },
-};
+      this.currentPage = 1
+      this.getDataDetail()
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
