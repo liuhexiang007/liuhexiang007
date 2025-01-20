@@ -150,7 +150,7 @@
         <div style="display: flex;flex-direction: column;margin-left: 10px;margin-top: 20px">
           <div style="margin-bottom: 20px">
             <el-button style="width: 120px" type="primary" size="small" @click="exportPlanClick">Export<br>Plan 導出表格</el-button>
-            <el-button style="width: 120px" type="primary" size="small" @click="$refs.feedbackReportDialog.showDialog(material, 'B4')">Feedback<br>History 用後報告</el-button>
+            <el-button style="width: 130px" type="primary" size="small" @click="$refs.feedbackReportDialog.showDialog(material, 'B4')">Feedback<br>Feedback 用後報告</el-button>
             <el-button type="primary" size="small" @click="exitClick">Exit 離開及列印<br>（Feedback & Print）</el-button>
           </div>
         </div>

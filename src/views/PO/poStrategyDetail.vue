@@ -66,6 +66,7 @@
               inactive-text="Off"
               active-color="#409EFF"
               inactive-color="#ff4949"
+              @change="handleSwitchChange"
             />
             <span style="margin: 0 8px; font-size: 12px">Cost Limit</span>
             <el-input
@@ -78,14 +79,7 @@
               @input="handleCostLimitInput"
             >
               <!-- 添加错误提示 -->
-              <template v-if="isInvalidValue" slot="suffix">
-                <el-tooltip
-                  content="請輸入40,000到60,000之間的數值"
-                  placement="top"
-                >
-                  <i class="el-icon-warning" style="color: #f56c6c" />
-                </el-tooltip>
-              </template>
+
             </el-input>
             <el-button
               size="mini"
@@ -93,13 +87,13 @@
               :disabled="!costLimiterEnabled"
               @click="resetCostLimit"
             >Reset</el-button>
-            <el-button
+            <!-- <el-button
               type="primary"
               size="mini"
               style="padding: 4px 6px; margin-left: 4px"
               :disabled="!costLimiterEnabled || isBusy"
               @click="updateCostLimit"
-            >Update</el-button>
+            >Update</el-button> -->
           </div>
           <!-- 滑块组件 -->
           <div style="width: 100%">
@@ -113,10 +107,10 @@
             >
               <span
                 style="width: 21%; color: #909399; font-size: 12px"
-              >40k</span>
+              >{{ formattedScaleMarks[0] }}</span>
               <span
                 style="width: 19%; color: #909399; font-size: 12px"
-              >45k</span>
+              >{{ formattedScaleMarks[1] }}</span>
               <span
                 style="
                   width: 20%;
@@ -124,7 +118,7 @@
                   font-size: 12px;
                   text-align: center;
                 "
-              >50k</span>
+              >{{ formattedScaleMarks[2] }}</span>
               <span
                 style="
                   width: 19%;
@@ -132,7 +126,7 @@
                   font-size: 12px;
                   text-align: right;
                 "
-              >55k</span>
+              >{{ formattedScaleMarks[3] }}</span>
               <span
                 style="
                   width: 21%;
@@ -140,11 +134,11 @@
                   font-size: 12px;
                   text-align: right;
                 "
-              >60k</span>
+              >{{ formattedScaleMarks[4] }}</span>
             </div>
             <el-slider
               v-model="sliderValue"
-              :marks="marks"
+              :marks="sliderMarksWithValues"
               :max="120"
               :min="80"
               :step="5"
@@ -172,13 +166,13 @@
         >Vehicle Type: {{ description.vehicleType || '' }}, Make:
           {{ description.manufacturer || '' }}, Model:
           {{ description.modelNo || '' }}</span>
-        <el-button
+        <!-- <el-button
           type="primary"
           size="mini"
           :disabled="isBusy"
           style="padding: 7px 12px; height: 28px; margin-top: 16px"
           @click="limiterClick"
-        >$50K Limiter</el-button>
+        >$50K Limiter</el-button> -->
       </div>
       <el-table
         v-loading="loading"
@@ -446,7 +440,7 @@ import {
   getTableDateList,
   getTableInfo,
   getTableMaterialList,
-  tableLimit
+  tableLimit as saveTableLimit
 } from '@/api/table'
 import PotentialVendorsDialog from '@/views/PO/module/potentialVendorsDialog'
 import ServicePackDialog from '@/views/PO/module/servicePackDialog'
@@ -494,7 +488,37 @@ export default {
       loading2: false,
       costLimiterEnabled: false,
       costLimitValue: 50000,
-      isInvalidValue: false // 添加验证状态标记
+      isInvalidValue: false,
+      scaleValues: []
+    }
+  },
+  computed: {
+    scaleMarks() {
+      const baseValue = Number(this.costLimitValue.toString().replace(/,/g, ''))
+      const ninetyPercent = 0.8
+      const eightyPercent = 0.9
+      const ninetyonePercent = 1.1
+      const ninetytwoPercent = 1.2
+
+      return [
+        baseValue * ninetyPercent,
+        baseValue * eightyPercent,
+        baseValue,
+        baseValue * ninetyonePercent,
+        baseValue * ninetytwoPercent
+      ]
+    },
+    formattedScaleMarks() {
+      return this.scaleMarks.map(value => `${(value / 1000).toFixed(0)}k`)
+    },
+    sliderMarksWithValues() {
+      return {
+        80: '80%',
+        90: '90%',
+        100: '100%',
+        110: '110%',
+        120: '120%'
+      }
     }
   },
   // 添加 watch 来格式化输入值
@@ -505,7 +529,7 @@ export default {
         const numStr = newVal.replace(/[^\d]/g, '')
         if (numStr !== newVal) {
           // 格式化数字
-          this.costLimitValue = this.formatCostLimit(numStr)
+          this.costLimitValue = numStr
         }
       }
     }
@@ -522,25 +546,23 @@ export default {
       const numValue = Number(value.replace(/,/g, ''))
 
       if (!isNaN(numValue)) {
+        console.log(numValue, '123')
+
         // 更新验证状态
-        this.isInvalidValue = numValue < 40000 || numValue > 60000
-        // 计算百分比：输入值 / 50000 * 100
         const percentage = (numValue / 50000) * 100
         // 确保百分比在80-120之间
-        if (percentage >= 80 && percentage <= 120) {
-          this.sliderValue = percentage
-          this.limit = 0
-          this.isBusy = false
-          // 如果需要立即触发更新，可以调用 tableLimit
-          this.tableLimit()
-        }
+        this.sliderValue = percentage
+        // this.costLimitValue = this.costLimitValue
+        // this.isBusy = true
+        this.sliderValue = 100
+        // limit按钮点击
+        this.limit = 1
+        this.tableLimit(this.costLimitValue)
+
+        // 如果需要立即触发更新，可以调用 tableLimit
       }
     },
 
-    // 可以添加一个格式化方法来处理输入的数字格式
-    formatCostLimit(value) {
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    },
     // 重置按钮
     resetClick() {
       this.material = ''
@@ -604,16 +626,17 @@ export default {
       })
     },
     sliderChange(value) {
+      console.log(value, 'valllllllllllll')
       // 根据滑块百分比计算对应的金额
-      const amount = Math.round((value / 100) * 50000)
+      const amount = Math.round((value / 100) * this.costLimitValue)
+      console.log(amount, '12312')
       // 格式化金额并更新input值
-      this.costLimitValue = this.formatCostLimit(amount.toString())
-      // 检查是否在有效范围内
-      this.isInvalidValue = amount < 40000 || amount > 60000
+      // this.costLimitValue = amount
       // 滑块改变
-      this.limit = 0
+      const percentageLimitValue = amount
+      this.limit = 1
       this.isBusy = false
-      this.tableLimit()
+      this.tableLimit(percentageLimitValue)
     },
     limiterClick() {
       // limit按钮点击
@@ -621,15 +644,16 @@ export default {
       this.isBusy = true
       this.tableLimit()
     },
-    tableLimit() {
+    tableLimit(costLimitValue = '') {
       const posList = []
       this.tableData2.forEach(item => {
         item.price = item.unitPrice
         posList.push(item)
       })
       this.loading = true
-      tableLimit({
+      saveTableLimit({
         limit: this.limit,
+        amount: costLimitValue || this.costLimitValue,
         percentage: this.sliderValue / 100,
         // predictions: this.tableData,
         material: this.material,
@@ -683,6 +707,7 @@ export default {
       this.getMaterialList('')
       this.sliderValue = 100
       this.isBusy = false
+      this.tableLimit()
     },
     updateCostLimit() {
       // this.costLimitValue = this.costLimitValue
@@ -691,6 +716,16 @@ export default {
       // limit按钮点击
       this.limit = 1
       this.tableLimit()
+    },
+    handleSwitchChange(value) {
+      if (!value) { // 当switch关闭时
+        this.costLimitValue = 50000
+        this.sliderValue = 100
+        this.isInvalidValue = false
+        this.limit = 0
+        this.isBusy = false
+        this.tableLimit()
+      }
     }
   }
 }

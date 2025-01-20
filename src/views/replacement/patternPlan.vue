@@ -261,7 +261,7 @@
               @click="exportPlanClick"
             >Export<br>Plan 導出表格</el-button>
             <el-button
-              style="width: 120px"
+              style="width: 130px"
               type="primary"
               size="small"
               @click="$refs.feedbackReportDialog.showDialog(material, 'C2')"
