@@ -79,31 +79,31 @@
         />
         <el-table-column
           prop="currentFleetSize"
-          label="Current Fleet Size"
+          label="Fleet Size"
           width="180"
           sortable
         />
         <el-table-column
           prop="fleetSize3"
-          label="Current"
-          width="100"
+          label="Current year"
+          width="110"
           sortable
         />
         <el-table-column
           prop="fleetSize2"
-          label="-1 year"
+          label="1 year ago"
           width="100"
           sortable
         />
         <el-table-column
           prop="fleetSize1"
-          label="-2 year"
+          label="2 year ago"
           width="100"
           sortable
         />
         <el-table-column
           prop="fleetSize0"
-          label="-3 year"
+          label="3 year ago"
           width="100"
           sortable
         />
@@ -192,8 +192,10 @@ export default {
   },
   methods: {
     resetClick() {
+      this.material = ''
       this.partNumber = ''
       this.reportDate = ''
+      this.getMaterialList('')
     },
     searchClick() { // 查询
       this.tableData = []

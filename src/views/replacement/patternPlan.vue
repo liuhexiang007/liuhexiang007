@@ -336,8 +336,14 @@ export default {
   },
   methods: {
     resetClick() {
+      this.makeValue = ''
+      this.modelValue = ''
+      this.material = ''
       this.partNumber = ''
       this.reportDate = ''
+      this.getMakeList('')
+      this.getModelList('')
+      this.getMaterialList('')
     },
     searchClick() {
       // 查询

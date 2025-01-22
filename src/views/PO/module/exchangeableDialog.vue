@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     showDialog(material) {
-      this.title = 'Exchangeable Materials'
+      this.title = 'Exchangeable Materials 替換零件'
       this.material = material
       this.getDataList()
       this.visible = true

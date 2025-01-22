@@ -59,6 +59,7 @@
             "
           >
             <span style="margin-right: 4px; font-size: 12px">Cost Limiter</span>
+
             <el-switch
               v-model="costLimiterEnabled"
               style="margin: 0 8px"
@@ -81,12 +82,12 @@
               <!-- 添加错误提示 -->
 
             </el-input>
-            <el-button
+            <!-- <el-button
               size="mini"
               style="padding: 4px 6px; margin: 0 4px"
               :disabled="!costLimiterEnabled"
               @click="resetCostLimit"
-            >Reset</el-button>
+            >Reset</el-button> -->
             <!-- <el-button
               type="primary"
               size="mini"
@@ -139,6 +140,8 @@
             <el-slider
               v-model="sliderValue"
               :marks="sliderMarksWithValues"
+              :disabled="costLimiterEnabled"
+
               :max="120"
               :min="80"
               :step="5"
@@ -526,7 +529,7 @@ export default {
     costLimitValue: {
       handler(newVal) {
         // 移除非数字字符
-        const numStr = newVal.replace(/[^\d]/g, '')
+        const numStr = (newVal || '').toString().replace(/[^\d]/g, '')
         if (numStr !== newVal) {
           // 格式化数字
           this.costLimitValue = numStr
@@ -675,13 +678,16 @@ export default {
         this.loading2 = false
         this.loading1 = false
         if (res.data) {
+          console.log(res.data, '123123')
           this.tableData = res.data.prediction
           this.tableData1 = res.data.consumption
           this.tableData2 = res.data.porecords
-          this.description = res.data.description || {
-            vehicleType: '',
-            manufacturer: '',
-            modelNo: ''
+
+          const descParts = res.data.description.split(',').map(part => part.trim())
+          this.description = {
+            vehicleType: descParts[0].trim() || '', // OIL
+            manufacturer: descParts[1] || '', // ENGINE
+            modelNo: descParts[2] || '' // 200-20GL/DRUM SAE5W-40
           }
           this.tableLimit()
         } else {
@@ -723,9 +729,14 @@ export default {
         this.sliderValue = 100
         this.isInvalidValue = false
         this.limit = 0
+
         this.isBusy = false
         this.tableLimit()
       }
+      this.sliderValue = 100
+      this.limit = 0
+
+      this.tableLimit()
     }
   }
 }

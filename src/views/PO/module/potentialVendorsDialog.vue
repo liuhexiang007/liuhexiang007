@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     showDialog(material) {
-      this.title = 'Potential Vendors'
+      this.title = 'Potential Vendors 供應商'
       this.material = material
       this.getDataList()
       this.visible = true
