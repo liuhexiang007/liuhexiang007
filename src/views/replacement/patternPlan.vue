@@ -73,21 +73,21 @@
               />
             </el-select>
           </div>
-          <!--          <div class="item">-->
-          <!--            <span>Report Date：</span>-->
-          <!--            <el-select-->
-          <!--              v-model="reportDate"-->
-          <!--              size="small"-->
-          <!--              placeholder="Please select Report Date"-->
-          <!--            >-->
-          <!--              <el-option-->
-          <!--                v-for="item in dateList"-->
-          <!--                :key="item.value"-->
-          <!--                :label="item.label"-->
-          <!--                :value="item.label"-->
-          <!--              />-->
-          <!--            </el-select>-->
-          <!--          </div>-->
+          <div class="item">
+            <span>Report Date：</span>
+            <el-select
+              v-model="reportDate"
+              size="small"
+              placeholder="Please select Report Date"
+            >
+              <el-option
+                v-for="item in dateList"
+                :key="item"
+                :label="item+'/01'"
+                :value="item"
+              />
+            </el-select>
+          </div>
           <el-button size="small" @click="resetClick">Reset</el-button>
           <el-button
             type="primary"
@@ -286,7 +286,7 @@ import {
   c2Makes,
   c2Models,
   c2Search,
-  getTableDateList,
+  // getTableDateList,
   vsnList
 } from '@/api/table'
 moment.locale('zh-cn')
@@ -308,7 +308,10 @@ export default {
       VSNSearchLoading: false,
       material: '',
       materialList: '',
-      dateList: '',
+      dateList: [
+        2022,
+        2023
+      ],
       reportDate: '',
       description: {
         vehicleType: '',
@@ -433,28 +436,28 @@ export default {
         }
       })
     },
-    getDateList() {
-      this.dateList = []
-      getTableDateList().then((res) => {
-        if (res.data) {
-          const list = []
-          res.data.forEach((item, index) => {
-            const map = {
-              label: item.date,
-              value: index
-            }
-            list.push(map)
-          })
-          this.dateList = list
-        }
-      })
-    },
+    // getDateList() {
+    //   this.dateList = []
+    //   getTableDateList().then((res) => {
+    //     if (res.data) {
+    //       const list = []
+    //       res.data.forEach((item, index) => {
+    //         const map = {
+    //           label: item.date,
+    //           value: index
+    //         }
+    //         list.push(map)
+    //       })
+    //       this.dateList = list
+    //     }
+    //   })
+    // },
     getDataDetail() {
       this.loading1 = true
       this.loading2 = true
       c2Search({
-        name: this.material
-        // date: this.reportDate
+        name: this.material,
+        date: this.reportDate
       }).then((res) => {
         this.loading2 = false
         this.loading1 = false

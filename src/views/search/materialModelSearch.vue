@@ -26,21 +26,21 @@
               />
             </el-select>
           </div>
-          <!--          <div class="item">-->
-          <!--            <span>Report Date：</span>-->
-          <!--            <el-select-->
-          <!--              v-model="reportDate"-->
-          <!--              size="small"-->
-          <!--              placeholder="Please select Report Date"-->
-          <!--            >-->
-          <!--              <el-option-->
-          <!--                v-for="item in dateList"-->
-          <!--                :key="item.value"-->
-          <!--                :label="item.label"-->
-          <!--                :value="item.label"-->
-          <!--              />-->
-          <!--            </el-select>-->
-          <!--          </div>-->
+          <div class="item">
+            <span>Report Date：</span>
+            <el-select
+              v-model="reportDate"
+              size="small"
+              placeholder="Please select Report Date"
+            >
+              <el-option
+                v-for="item in dateList"
+                :key="item"
+                :label="item+'/01'"
+                :value="item"
+              />
+            </el-select>
+          </div>
           <el-button size="small" @click="resetClick">Reset</el-button>
           <el-button type="primary" size="small" @click="searchClick">Search</el-button>
         </div>
@@ -163,7 +163,11 @@
 
 <script>
 import moment from 'moment'
-import { b4Search, getTableDateList, getTableMaterialList } from '@/api/table'
+import {
+  b4Search,
+  // getTableDateList,
+  getTableMaterialList
+} from '@/api/table'
 moment.locale('zh-cn')
 import FeedbackReportDialog from '@/views/PO/module/feedbackReportDialog'
 import ExitDialog from '@/views/PO/module/exitDialog'
@@ -176,7 +180,10 @@ export default {
       isBusy: false,
       material: '',
       materialList: '',
-      dateList: '',
+      dateList: [
+        2022,
+        2023
+      ],
       reportDate: '',
       description: '',
       tableData1: [],
@@ -226,22 +233,22 @@ export default {
         }
       })
     },
-    getDateList() {
-      this.dateList = []
-      getTableDateList().then(res => {
-        if (res.data) {
-          const list = []
-          res.data.forEach((item, index) => {
-            const map = {
-              label: item.date,
-              value: index
-            }
-            list.push(map)
-          })
-          this.dateList = list
-        }
-      })
-    },
+    // getDateList() {
+    //   this.dateList = []
+    //   getTableDateList().then(res => {
+    //     if (res.data) {
+    //       const list = []
+    //       res.data.forEach((item, index) => {
+    //         const map = {
+    //           label: item.date,
+    //           value: index
+    //         }
+    //         list.push(map)
+    //       })
+    //       this.dateList = list
+    //     }
+    //   })
+    // },
     getDataDetail() {
       this.loading1 = true
       b4Search({

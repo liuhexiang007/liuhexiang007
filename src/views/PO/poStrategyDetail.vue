@@ -34,9 +34,9 @@
             >
               <el-option
                 v-for="item in dateList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.label"
+                :key="item"
+                :label="item+'/01'"
+                :value="item"
               />
             </el-select>
           </div>
@@ -66,7 +66,7 @@
               active-text="On"
               inactive-text="Off"
               active-color="#409EFF"
-              inactive-color="#ff4949"
+              inactive-color="rgb(211 211 211)"
               @change="handleSwitchChange"
             />
             <span style="margin: 0 8px; font-size: 12px">Cost Limit</span>
@@ -108,10 +108,10 @@
             >
               <span
                 style="width: 21%; color: #909399; font-size: 12px"
-              >{{ formattedScaleMarks[0] }}</span>
+              >40k</span>
               <span
                 style="width: 19%; color: #909399; font-size: 12px"
-              >{{ formattedScaleMarks[1] }}</span>
+              >45k</span>
               <span
                 style="
                   width: 20%;
@@ -119,7 +119,7 @@
                   font-size: 12px;
                   text-align: center;
                 "
-              >{{ formattedScaleMarks[2] }}</span>
+              >50k</span>
               <span
                 style="
                   width: 19%;
@@ -127,7 +127,7 @@
                   font-size: 12px;
                   text-align: right;
                 "
-              >{{ formattedScaleMarks[3] }}</span>
+              >55k</span>
               <span
                 style="
                   width: 21%;
@@ -135,7 +135,7 @@
                   font-size: 12px;
                   text-align: right;
                 "
-              >{{ formattedScaleMarks[4] }}</span>
+              >60k</span>
             </div>
             <el-slider
               v-model="sliderValue"
@@ -440,7 +440,7 @@
 <script>
 import moment from 'moment'
 import {
-  getTableDateList,
+  // getTableDateList,
   getTableInfo,
   getTableMaterialList,
   tableLimit as saveTableLimit
@@ -466,7 +466,10 @@ export default {
       isBusy: false,
       material: '',
       materialList: '',
-      dateList: '',
+      dateList: [
+        2022,
+        2023
+      ],
       reportDate: '',
       limit: 0,
       sliderValue: 100,
@@ -490,7 +493,9 @@ export default {
       loading1: false,
       loading2: false,
       costLimiterEnabled: false,
-      costLimitValue: 50000,
+      costLimitValue: '$50,000',
+      costLimitNumb: 50000,
+      constLimitStr: '',
       isInvalidValue: false,
       scaleValues: []
     }
@@ -525,45 +530,33 @@ export default {
     }
   },
   // 添加 watch 来格式化输入值
-  watch: {
-    costLimitValue: {
-      handler(newVal) {
-        // 移除非数字字符
-        const numStr = (newVal || '').toString().replace(/[^\d]/g, '')
-        if (numStr !== newVal) {
-          // 格式化数字
-          this.costLimitValue = numStr
-        }
-      }
-    }
-  },
   created() {
     this.getMaterialList('')
-    this.getDateList()
+    // this.getDateList()
   },
   methods: {
     // 添加输入处理方法
     handleCostLimitInput(value) {
       if (!this.costLimiterEnabled) return
+      value = value.substring(1)
       // 移除所有逗号并转换为数字
       const numValue = Number(value.replace(/,/g, ''))
+      this.costLimitNumb = numValue
 
-      if (!isNaN(numValue)) {
-        console.log(numValue, '123')
+      const numStr = `$${numValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+      this.costLimitValue = numStr
+      // 更新验证状态
+      const percentage = (numValue / 50000) * 100
+      // 确保百分比在80-120之间
+      this.sliderValue = percentage
+      // this.costLimitValue = this.costLimitValue
+      // this.isBusy = true
+      this.sliderValue = 100
+      // limit按钮点击
+      this.limit = 1
+      this.tableLimit(this.costLimitValue)
 
-        // 更新验证状态
-        const percentage = (numValue / 50000) * 100
-        // 确保百分比在80-120之间
-        this.sliderValue = percentage
-        // this.costLimitValue = this.costLimitValue
-        // this.isBusy = true
-        this.sliderValue = 100
-        // limit按钮点击
-        this.limit = 1
-        this.tableLimit(this.costLimitValue)
-
-        // 如果需要立即触发更新，可以调用 tableLimit
-      }
+      // 如果需要立即触发更新，可以调用 tableLimit
     },
 
     // 重置按钮
@@ -574,7 +567,8 @@ export default {
       this.sliderValue = 100
       this.isBusy = false
       this.limit = 0
-      this.costLimitValue = 50000
+      this.costLimitValue = '$50,000'
+      this.costLimitNumb = 50000
       this.getMaterialList('')
     },
     searchClick() {
@@ -609,30 +603,29 @@ export default {
         }
       })
     },
-    getDateList() {
-      this.dateList = []
-      getTableDateList().then(res => {
-        if (res.data) {
-          const list = []
-          res.data.forEach((item, index) => {
-            const map = {
-              label: item.date,
-              value: index
-            }
-            list.push(map)
-          })
-          if (list && list.length > 0) {
-            this.reportDate = list[0].label
-          }
-          this.dateList = list
-        }
-      })
-    },
+    // 获取时间接口
+    // getDateList() {
+    //   this.dateList = []
+    //   getTableDateList().then(res => {
+    //     if (res.data) {
+    //       const list = []
+    //       res.data.forEach((item, index) => {
+    //         const map = {
+    //           label: item.date,
+    //           value: index
+    //         }
+    //         list.push(map)
+    //       })
+    //       if (list && list.length > 0) {
+    //         this.reportDate = list[0].label
+    //       }
+    //       this.dateList = list
+    //     }
+    //   })
+    // },
     sliderChange(value) {
-      console.log(value, 'valllllllllllll')
       // 根据滑块百分比计算对应的金额
-      const amount = Math.round((value / 100) * this.costLimitValue)
-      console.log(amount, '12312')
+      const amount = Math.round((value / 100) * this.costLimitNumb)
       // 格式化金额并更新input值
       // this.costLimitValue = amount
       // 滑块改变
@@ -654,9 +647,13 @@ export default {
         posList.push(item)
       })
       this.loading = true
+      let numbCor = (costLimitValue || this.costLimitValue)
+      if (typeof numbCor === 'string') {
+        numbCor = numbCor.substring(1).replace(/,/g, '')
+      }
       saveTableLimit({
         limit: this.limit,
-        amount: costLimitValue || this.costLimitValue,
+        amount: parseInt(numbCor),
         percentage: this.sliderValue / 100,
         // predictions: this.tableData,
         material: this.material,
@@ -678,7 +675,6 @@ export default {
         this.loading2 = false
         this.loading1 = false
         if (res.data) {
-          console.log(res.data, '123123')
           this.tableData = res.data.prediction
           this.tableData1 = res.data.consumption
           this.tableData2 = res.data.porecords
@@ -708,7 +704,9 @@ export default {
       this.getDataDetail()
     },
     resetCostLimit() {
-      this.costLimitValue = 50000
+      this.costLimitValue = '$50,000'
+      this.costLimitNumb = 50000
+
       this.limit = 0
       this.getMaterialList('')
       this.sliderValue = 100
@@ -725,7 +723,8 @@ export default {
     },
     handleSwitchChange(value) {
       if (!value) { // 当switch关闭时
-        this.costLimitValue = 50000
+        this.costLimitValue = '$50,000'
+        this.costLimitNumb = 50000
         this.sliderValue = 100
         this.isInvalidValue = false
         this.limit = 0
@@ -734,8 +733,7 @@ export default {
         this.tableLimit()
       }
       this.sliderValue = 100
-      this.limit = 0
-
+      this.limit = 1
       this.tableLimit()
     }
   }
