@@ -81,7 +81,15 @@ export function servicePackExport(params) { // 根据material导出
     params
   })
 }
-
+// 导出准确率报告 根据开始时间与结束时间导出
+export function exportAccuracyReport(params) {
+  return request({
+    url: '/accuracy-report/export',
+    method: 'get',
+    params, // 其他参数
+    responseType: 'blob' // 用于下载文件
+  })
+}
 // AOP
 // --------------------------report列表-------------------------
 export function a2Update(params) { // a2更新

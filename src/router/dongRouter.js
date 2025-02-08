@@ -113,6 +113,7 @@ async function DynamicAddRouter() {
           parentName: 'Report',
           path: 'accuracyReport',
           menuName: 'Accuracy Report',
+          name: 'AccuracyReport',
           orderNum: 999,
           visible: '0'
         })

@@ -77,34 +77,37 @@
           width="150"
           sortable
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="currentFleetSize"
           label="Fleet Size"
           width="180"
           sortable
-        />
+        /> -->
         <el-table-column
           prop="fleetSize3"
-          label="Current year"
-          width="110"
+          width="120"
           sortable
-        />
+        >
+          <template slot="header">
+            <span>Fleet Size<br>Current year</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="fleetSize2"
-          label="1 year ago"
-          width="100"
+          label="Fleet Size 1 year ago"
+          width="96"
           sortable
         />
         <el-table-column
           prop="fleetSize1"
-          label="2 year ago"
-          width="100"
+          label="Fleet Size 2 year ago"
+          width="96"
           sortable
         />
         <el-table-column
           prop="fleetSize0"
-          label="3 year ago"
-          width="100"
+          label="Fleet Size 3 year ago"
+          width="96"
           sortable
         />
         <el-table-column
@@ -181,8 +184,8 @@ export default {
       material: '',
       materialList: '',
       dateList: [
-        2022,
-        2023
+        2023,
+        2022
       ],
       reportDate: '',
       description: '',
@@ -195,7 +198,7 @@ export default {
   },
   created() {
     this.getMaterialList('')
-    this.getDateList()
+    // this.getDateList()
   },
   methods: {
     resetClick() {
@@ -267,7 +270,7 @@ export default {
     exportPlanClick() { // 导出表格
       if (this.material && this.material.length > 0) {
         let url = window._CONFIG.baseUrl + '/b4/export'
-        url = url + '?name=' + this.material
+        url = url + '?name=' + this.material + '&date=' + this.reportDate
         if (url) {
           window.open(url)
         }

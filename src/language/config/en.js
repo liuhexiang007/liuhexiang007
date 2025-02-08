@@ -37,7 +37,8 @@ module.exports = {
     PurchaseReport: 'Purchase Report',
     AccountManagement: 'Account Management',
     PermissionList: 'Menu Management',
-    RoleList: 'Role Management'
+    RoleList: 'Role Management',
+    'Accuracy Report': 'Accuracy Report'
   },
   commit: {
     searchButton: 'Search',

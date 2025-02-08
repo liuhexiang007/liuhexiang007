@@ -1,227 +1,279 @@
 <template>
-  <div id="permissionList" style="height: 90vh">
+  <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <div style="display: flex;justify-content: space-between;align-items: center">
-          <span>Accuracy Report 預測準確度報告
-          </span>
-
-        </div>
+        <div class="title"><span>Accuracy Report 預測準確度報告</span></div>
       </div>
-
-      <!-- 表格部分 -->
+      <div class="searchBar">
+        <!-- <div class="searchItem">
+          <div class="item">
+            <span>Decrease % threshold：</span>
+            <el-slider v-model="sliderValue" style="width: 250px;margin-right: 10px" :max="100" :min="0" :step="5" />
+            <span>{{ sliderValue }}</span>
+          </div>
+          <el-button type="primary" size="small" :loading="updateLoading" @click="upDateClick">Update Parameter</el-button>
+          <el-button type="primary" size="small" @click="searchClick">Generate Report</el-button>
+        </div> -->
+      </div>
       <el-table
         v-loading="loading"
+        element-loading-text="Loading"
+        element-loading-spinner="el-icon-loading"
         :data="tableData"
-        style="width: 100%;"
+        stripe
+        height="68vh"
+        style="width: 100%"
         border
-        :header-cell-style="{ backgroundColor: 'rgb(246, 248, 250)' }"
+        :header-cell-style="{backgroundColor: 'rgb(246, 248, 250)'}"
       >
+        <el-table-column
+          type="index"
+          min-width="50"
+          fixed
+        />
         <el-table-column
           prop="reportName"
           label="Report Name"
-          min-width="300"
+          min-width="250"
         />
         <el-table-column
-          prop="createdOn"
+          prop="createTime"
           label="Created On"
-          min-width="200"
-        />
+          min-width="300"
+        >
+          <template slot-scope="scope">
+            <span>{{ showTime(scope.row.createTime) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="Action"
-          width="150"
-          align="center"
-        />
+          min-width="150"
+          fixed="right"
+        >
+          <template>
+            <template>
+              <!--            <a>View</a>-->
+              <a @click="handleExport()">Download</a>
+            </template>
+          </template></el-table-column>
       </el-table>
+      <div style="display: flex;justify-content: flex-end;margin-top: 20px">
+        <el-pagination
+          :current-page.sync="currentPage"
+          :page-size="10"
+          layout="prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </el-card>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { menuDelete, menuList } from '@/api/table'
+import { c1List } from '@/api/table'
+import axios from 'axios'
+import { getToken } from '@/utils/auth'
+moment.locale('zh-cn')
 
 export default {
-  name: 'PermissionList',
+  name: 'DecreasingGovernment',
+  components: { },
   data() {
     return {
-      permissionList: [],
-      permissionAIList: [],
+      updateLoading: false,
+      value1: [],
+      fileName: '',
       tableData: [],
+      currentPage: 1,
+      total: 0,
       loading: false,
-      menuList: [
-        {
-          menuId: '1803291628423659520', // Report 的 menuId
-          children: [
-            {
-              menuId: '1852246054658004000',
-              component: 'accuracyReport',
-              createBy: 'Admin',
-              createTime: null,
-              icon: '',
-              isCache: '',
-              isFrame: '',
-              menuName: 'Accuracy Report',
-              menuType: 'C',
-              orderNum: 999,
-              parentId: '1803291628423659520',
-              parentName: 'Report',
-              path: '/accuracyReport',
-              perms: null,
-              query: '',
-              remark: '',
-              status: '',
-              updateBy: null,
-              updateTime: null,
-              visible: '0'
-            }
-          ]
-        }
-      ]
+      exportLoading: false
+      // sliderValue: 10
     }
   },
-  mounted() {
-    // 权限列表type 1是PLM 2是AI
-    this.getPLMPermissionList()
-    this.getReportList() // 获取报告列表
+  created() {
+    this.getReportDataList()
   },
   methods: {
-    formatDate(date) {
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    // searchClick() { // 查询
+    //   this.currentPage = 1
+    //   this.getReportDataList()
+    // },
+    // upDateClick() { // 更新
+    //   this.updateLoading = true
+    //   c1Update({
+    //     threshold: String((this.sliderValue / 100))
+    //   }).then(res => {
+    //     this.updateLoading = false
+    //     if (res.code === 200) {
+    //       this.$message.success(res.msg)
+    //     } else {
+    //       this.$message.error(res.msg)
+    //     }
+    //   })
+    // },
+    handleSizeChange(val) { // 每页条数变化
     },
-    getReportList() {
-      // TODO: 调用API获取报告列表
-      // this.tableData = ...
+    handleCurrentChange(val) { // 当前页数切换
+      this.currentPage = val
+      this.getReportDataList()
     },
-    handleView(row) {
-      // TODO: 处理查看报告详情
-      console.log('View report:', row)
+    addClick() {
+      this.$refs.optionReportDialog.showDialog({})
     },
-    getPLMPermissionList() { // 获取PLM权限列表
-      const loading = this.$loading({
-        target: document.querySelector('#content'),
-        text: 'Loading',
-        spinner: 'el-icon-loading'
-      })
+    getReportDataList() {
       const path = {
-        page: 0,
-        limit: 500
+        page: this.currentPage - 1,
+        limit: 10
       }
-      menuList({}, path).then(res => {
-        loading.close()
-        this.permissionList = []
+      this.loading = true
+      c1List({}, path).then(res => {
+        this.loading = false
         if (res.data) {
-          const list = res.data.list
-          const firstLevel = []
-          list.forEach((item) => {
-            const secondLevel = []
-            if (!item.parentId) {
-              list.forEach(data => {
-                const thirdLevel = []
-                list.forEach(temp => {
-                  if (temp.parentId && temp.parentId === data['menuId']) {
-                    thirdLevel.push(temp)
-                  }
-                })
-                data.children = thirdLevel
-                if (data.parentId && data.parentId === item['menuId']) {
-                  secondLevel.push(data)
-                }
-              })
-              item.children = secondLevel
-              firstLevel.push(item)
-            }
+          this.total = res.data.total
+          res.data.list.forEach(item => {
+            item.reportName = 'Accuracy Report 202201 202212'
+            item.createTime = new Date('2023-01-01')
           })
-          this.permissionList = firstLevel
+          this.tableData = res.data.list
         }
       })
     },
-    addMenuClick() { // 新增一级菜单(PLM)
-      this.$refs.addNewPermissionDialog.showDialog({}, false)
+    showTime(time) { // 时间展示
+      // return moment(time).format('YYYY-MM-DD HH:mm:ss')
+      return moment(time).format('YYYY-MM-DD ')
     },
-    append(node, data) { // 新增(PLM)
-      this.$refs.addNewPermissionDialog.showDialog(data, false)
-    },
-    edit(node, data) { // 编辑(PLM)
-      this.$refs.addNewPermissionDialog.showDialog(data, true)
-    },
-    remove(node, data) { // 删除(PLM)
-      this.$confirm('Are you sure to delete this permission menu？', 'delete', {
-        confirmButtonText: 'Sure',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      }).then(() => {
-        menuDelete({}, { 'menuId': data['menuId'] }).then(res => {
-          if (res.code === 200) {
-            this.$message({
-              message: res.msg,
-              type: 'success'
-            })
-            this.getPLMPermissionList()
-          } else {
-            this.$message.error(res.msg)
-          }
-        })
-      }).catch(() => {})
+    // exportClick(data) { // 自定义导出
+    //   if (data.id) {
+    //     const url = window._CONFIG.baseUrl + '/c1/export/' + data.id
+    //     if (url) {
+    //       window.open(url)
+    //     }
+    //   }
+    // },
+    handleExport() {
+      axios({
+        url: window._CONFIG.baseUrl + '/accuracy-report/export',
+        method: 'GET',
+        params: {
+          startDate: '2022/01',
+          endDate: '2022/12'
+        },
+        headers: {
+          'Authorization': getToken()
+        },
+        responseType: 'blob'
+      }).then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'AccuracyReport202201202212.xlsx') // 或其他适当的文件名
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      })
     },
     updateData() { // 更新数据
-      this.getPLMPermissionList()
-    },
-    handleSaveMenu() {
-    //   const menuData = {
-    //     children: [
-    //       {
-    //         path: '/accuracyReport',
-    //         component: 'accuracyReport',
-    //         menuName: 'Accuracy Report',
-    //         parentId: '1803291628423659520',
-    //         orderNum: 999,
-    //         visible: '0'
-    //       }
-    //     ]
-    //   }
-    //   saveMenu(menuData).then(res => {
-    //     // 处理保存响应
-    //   })
+      this.currentPage = 1
+      this.getReportDataList()
     }
   }
 }
 </script>
 
-  <style lang="less">
-
-  #permissionList {
+<style lang="less" scoped>
+.el-input{
+  width: 250px;
+}
+.searchBar {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+  .searchItem {
     display: flex;
-    .box-card {
-      width: 100%;
-      margin: 20px;
-      .clearfix:before,
-      .clearfix:after {
-        display: table;
-        content: "";
-      }
-      .clearfix:after {
-        clear: both
-      }
-    }
-    .content {
-      height: 72vh;
-      overflow-y: scroll;
-      margin: 30px;
-      .el-tree-node__content {
-        height: 40px;
-      }
-    }
-    .custom-tree-node {
-      flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    .item {
       display: flex;
       align-items: center;
-      font-size: 14px;
-      padding-left: 8px;
-      span:nth-child(1) {
-        width: 300px;
+      margin-right: 10px;
+      span {
+        white-space: nowrap;
+        font-size: 14px;
       }
     }
   }
+  .buttonItem {
+    display: flex;
+    align-items: center;
+    button {
+      margin-left: 10px;
+    }
+  }
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both
+}
+.clearfix {
+  border-bottom: 1px solid #D3EAE0;
+}
 
-  </style>
+.box-card {
+  .title {
+    height: 55px;
+    display: flex;
+    align-items: center;
+    span {
+      color: black;
+      font-weight: bold;
+      font-family: "Microsoft Yahei", Arial, sans-serif;
+      font-size: 20px;
+      text-indent: 20px;
+    }
+  }
+  .cell {
+    a {
+      margin-right: 10px;
+    }
+  }
+}
+/deep/.el-card__header {
+  padding: 0!important;
+}
+#tabItemOptionDialog {
+  position: absolute;
+  z-index: 999;
+}
+.isfixed {
+  opacity: 0;
+}
+.el-table th.el-table__cell:hover .isfixed{
+  opacity: 1;
+  cursor: pointer;
+  float: right;
+  color: #1D703E;
+}
+.el-table th.el-table__cell.is-sortable:hover .isfixed{
+  opacity: 1;
+  cursor: pointer;
+  float: right;
+  color: #1D703E;
+  margin-top: 6px;
+}
+/deep/.el-table .caret-wrapper {
+  opacity: 0;
+}
+/deep/.el-table th.el-table__cell.is-sortable:hover .caret-wrapper{
+  opacity: 1;
+}
+</style>

@@ -140,6 +140,8 @@ export default {
     exportClick(data) { // 自定义导出
       if (data.id) {
         const url = window._CONFIG.baseUrl + '/c1/export/' + data.id
+        console.log('export url:', url)
+        console.log('export headers:', document.cookie) // 查看是否有 cookie
         if (url) {
           window.open(url)
         }

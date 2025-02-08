@@ -98,7 +98,7 @@
           </div>
           <!-- 滑块组件 -->
           <div style="width: 100%">
-            <div
+            <!-- <div
               style="
                 width: 100%;
                 display: flex;
@@ -136,7 +136,7 @@
                   text-align: right;
                 "
               >60k</span>
-            </div>
+            </div> -->
             <el-slider
               v-model="sliderValue"
               :marks="sliderMarksWithValues"
@@ -467,8 +467,8 @@ export default {
       material: '',
       materialList: '',
       dateList: [
-        2022,
-        2023
+        2023,
+        2022
       ],
       reportDate: '',
       limit: 0,
@@ -547,7 +547,6 @@ export default {
       this.costLimitValue = numStr
       // 更新验证状态
       const percentage = (numValue / 50000) * 100
-      // 确保百分比在80-120之间
       this.sliderValue = percentage
       // this.costLimitValue = this.costLimitValue
       // this.isBusy = true
@@ -630,9 +629,9 @@ export default {
       // this.costLimitValue = amount
       // 滑块改变
       const percentageLimitValue = amount
-      this.limit = 1
+      this.limit = 0
       this.isBusy = false
-      this.tableLimit(percentageLimitValue)
+      this.tableLimit(percentageLimitValue, this.reportDate)
     },
     limiterClick() {
       // limit按钮点击
@@ -648,12 +647,14 @@ export default {
       })
       this.loading = true
       let numbCor = (costLimitValue || this.costLimitValue)
+
       if (typeof numbCor === 'string') {
         numbCor = numbCor.substring(1).replace(/,/g, '')
       }
       saveTableLimit({
         limit: this.limit,
         amount: parseInt(numbCor),
+        date: this.reportDate,
         percentage: this.sliderValue / 100,
         // predictions: this.tableData,
         material: this.material,
@@ -685,6 +686,7 @@ export default {
             manufacturer: descParts[1] || '', // ENGINE
             modelNo: descParts[2] || '' // 200-20GL/DRUM SAE5W-40
           }
+          this.limit = 0
           this.tableLimit()
         } else {
           this.$message.warning('Insufficient Data for AI prediction.')
@@ -713,14 +715,14 @@ export default {
       this.isBusy = false
       this.tableLimit()
     },
-    updateCostLimit() {
-      // this.costLimitValue = this.costLimitValue
-      this.isBusy = true
+    // updateCostLimit() {
+    //   // this.costLimitValue = this.costLimitValue
+    //   this.isBusy = true
 
-      // limit按钮点击
-      this.limit = 1
-      this.tableLimit()
-    },
+    //   // limit按钮点击
+    //   this.limit = 1
+    //   this.tableLimit()
+    // },
     handleSwitchChange(value) {
       if (!value) { // 当switch关闭时
         this.costLimitValue = '$50,000'
@@ -728,9 +730,9 @@ export default {
         this.sliderValue = 100
         this.isInvalidValue = false
         this.limit = 0
-
         this.isBusy = false
-        this.tableLimit()
+        this.tableData = []
+        this.getDataDetail()
       }
       this.sliderValue = 100
       this.limit = 1

@@ -29,7 +29,8 @@ module.exports = {
     ReportCenter: 'Report Center',
     AccountManagement: 'Account Management',
     PermissionList: 'Menu Management',
-    RoleList: 'Role Management'
+    RoleList: 'Role Management',
+    'Accuracy Report': '准确率报告'
   },
   commit: {
     searchButton: '查询',

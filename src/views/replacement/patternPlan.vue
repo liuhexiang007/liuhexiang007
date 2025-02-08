@@ -309,8 +309,8 @@ export default {
       material: '',
       materialList: '',
       dateList: [
-        2022,
-        2023
+        2023,
+        2022
       ],
       reportDate: '',
       description: {
@@ -500,7 +500,7 @@ export default {
       // 导出表格
       if (this.material && this.material.length > 0) {
         let url = window._CONFIG.baseUrl + '/c2/export'
-        url = url + '?name=' + this.material
+        url = url + '?name=' + this.material + '&date=' + this.reportDate
         if (url) {
           window.open(url)
         }
