@@ -3,11 +3,10 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <div style="display: flex;justify-content: space-between;align-items: center">
-          <span>Accuracy Report</span>
+          <span>Menu List</span>
           <el-button type="primary" size="small" @click="addMenuClick">+ New</el-button>
         </div>
       </div>
-
       <div id="content" class="content">
         <el-tree
           :data="permissionList"
